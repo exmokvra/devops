@@ -9,7 +9,7 @@ logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-SLACK_DEBUG_URL = "https://hooks.slack.com/services/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"
+SLACK_DEBUG_URL = "https://hooks.slack.com/services/xxx/yyy/zzz"
 SLACK_DEBUG_CHANNEL = "aprox_messages"
 SLACK_AUTHOR = "AproxSniffer"
 app_name = "aproxmessagesystem"
