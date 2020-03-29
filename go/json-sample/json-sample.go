@@ -1,5 +1,8 @@
 package main
 
+// curl -s -XPOST -d'{"firstname":"Guilherme","lastname":"Sesterheim","age":29}' http://localhost:8080/decode
+// curl -s http://localhost:8080/encode
+
 import (
 	"encoding/json"
 	"fmt"
