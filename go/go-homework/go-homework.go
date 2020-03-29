@@ -12,6 +12,8 @@ import (
 	"go.etcd.io/etcd/clientv3"
 )
 
+const ETCD_KEY_NAME = "operation"
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -27,101 +29,114 @@ func main() {
 }
 
 func deleteUserData(w http.ResponseWriter, r *http.Request) {
-	cli, ctx, cancel, err := etcdConnect()
+	cli, ctx, cancel, err := etcdConnect(w)
 	if err != nil {
-		fmt.Println("Error starting connection")
+		fmt.Fprintf(w, "Error opening ETCD connection\n")
+		closeEtcd(w, cli, cancel)
+		return
 	}
 
-	opts := []clientv3.OpOption{
-		clientv3.WithPrefix(),
-		clientv3.WithSort(clientv3.SortByKey, clientv3.SortAscend),
-	}
-
-	result, getErr := listHistoryOperations(cli, ctx, opts)
+	result, getErr := listHistoryOperations(cli, ctx, buildOpts())
 	if getErr != nil {
-		fmt.Println("Error listing operations")
+		fmt.Fprintf(w, "Error listing operations\n")
+		closeEtcd(w, cli, cancel)
+		return
 	}
+
+	if len(result.Kvs) <= 0 {
+		fmt.Fprintf(w, "Nothing to delete here\n")
+		closeEtcd(w, cli, cancel)
+		return
+	}
+
 	for _, item := range result.Kvs {
-		delResp, delErr := cli.Delete(ctx, string(item.Key))
+		_, delErr := cli.Delete(ctx, string(item.Key))
 		if delErr != nil {
-			fmt.Println("Error deleting keys")
+			fmt.Fprintf(w, "Error deleting keys\n")
 		} else {
-			fmt.Printf("%d keys deleted succesfully", delResp.Deleted)
-			fmt.Println()
+			fmt.Fprintf(w, "Key deleted successfully: %s\n", string(item.Key))
 		}
 	}
 
-	closeEtcd(cli, cancel)
+	closeEtcd(w, cli, cancel)
 }
 
-func history(w http.ResponseWriter, r *http.Request) {
-	cli, ctx, cancel, err := etcdConnect()
-	if err != nil {
-		fmt.Println("Error starting connection")
-	}
-
-	opts := []clientv3.OpOption{
+func buildOpts() []clientv3.OpOption {
+	return []clientv3.OpOption{
 		clientv3.WithPrefix(),
 		clientv3.WithSort(clientv3.SortByKey, clientv3.SortAscend),
 	}
+}
 
-	result, getErr := listHistoryOperations(cli, ctx, opts)
+func history(w http.ResponseWriter, r *http.Request) {
+	cli, ctx, cancel, err := etcdConnect(w)
+	if err != nil {
+		fmt.Fprintf(w, "Error opening ETCD connection\n")
+		closeEtcd(w, cli, cancel)
+		return
+	}
+
+	result, getErr := listHistoryOperations(cli, ctx, buildOpts())
 	if getErr != nil {
-		fmt.Println("Error listing operations")
+		fmt.Fprintf(w, "Error listing operations\n")
+		closeEtcd(w, cli, cancel)
+		return
 	}
 	for _, item := range result.Kvs {
-		fmt.Println(string(item.Key), string(item.Value))
+		fmt.Fprintf(w, "Stored key / value: %s = %s\n", string(item.Key), string(item.Value))
 	}
 
-	closeEtcd(cli, cancel)
+	closeEtcd(w, cli, cancel)
 }
 
 func listHistoryOperations(cli *clientv3.Client, ctx context.Context, opts []clientv3.OpOption) (*clientv3.GetResponse, error) {
-	return cli.Get(ctx, "operation", opts...)
+	return cli.Get(ctx, ETCD_KEY_NAME, opts...)
 }
 
-func putValueEtcd(value int64) {
-	cli, ctx, cancel, err := etcdConnect()
+func putValueEtcd(w http.ResponseWriter, value int64) {
+	cli, ctx, cancel, err := etcdConnect(w)
 	if err != nil {
-		fmt.Println("Error opening ETCD connection")
+		fmt.Fprintf(w, "Error opening ETCD connection\n")
+		closeEtcd(w, cli, cancel)
+		return
 	}
 
-	keyToEtcd := fmt.Sprintf("operation_%02d", rand.Intn(1000))
-	fmt.Printf("Key to ETCD : %s \n", keyToEtcd)
-	fmt.Printf("Value to ETCD : %d \n", value)
+	keyToEtcd := fmt.Sprintf(ETCD_KEY_NAME+"_%02d", rand.Intn(1000))
+	fmt.Fprintf(w, "Key to ETCD: %s\n", string(keyToEtcd))
+	fmt.Fprintf(w, "Value to ETCD: %d\n", value)
 
 	resPut, errPut := cli.Put(ctx, keyToEtcd, strconv.FormatInt(value, 10))
 	if errPut != nil {
-		fmt.Println(errPut)
+		fmt.Fprintf(w, "Error putting operation on ETCD: %s\n", errPut)
 	} else {
-		fmt.Printf("Put on ETCD : %s \n", resPut.OpResponse().Put())
+		fmt.Fprintf(w, "Successfully PUT on ETCD: %s \n", resPut.OpResponse().Put())
 	}
 
-	closeEtcd(cli, cancel)
+	closeEtcd(w, cli, cancel)
 }
 
-func etcdConnect() (*clientv3.Client, context.Context, context.CancelFunc, error) {
+func etcdConnect(w http.ResponseWriter) (*clientv3.Client, context.Context, context.CancelFunc, error) {
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{"localhost:2379", "localhost:22379", "localhost:32379"},
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintf(w, "Error starting connection with ETCD: %s\n", err)
 	} else {
-		fmt.Println("Etcd Client connected")
+		fmt.Fprintf(w, "ETCD Client connected\n")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	return cli, ctx, cancel, err
 }
 
-func closeEtcd(cli *clientv3.Client, cancel context.CancelFunc) {
+func closeEtcd(w http.ResponseWriter, cli *clientv3.Client, cancel context.CancelFunc) {
 	cancel()
 	errClose := cli.Close()
 	if errClose != nil {
-		fmt.Println("Error closing client")
+		fmt.Fprintf(w, "Error closing ETCD client\n")
 	} else {
-		fmt.Println("ETCD client disconnected")
+		fmt.Fprintf(w, "ETCD Client disconnected\n")
 	}
 }
 
@@ -132,9 +147,9 @@ func subtract(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := intValA - intValB
-	putValueEtcd(result)
+	putValueEtcd(w, result)
 
-	fmt.Fprintf(w, "The subtraction result is: %d", result)
+	fmt.Fprintf(w, "The subtraction result is: %d\n", result)
 }
 
 func multiply(w http.ResponseWriter, r *http.Request) {
@@ -144,9 +159,9 @@ func multiply(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := intValA * intValB
-	putValueEtcd(result)
+	putValueEtcd(w, result)
 
-	fmt.Fprintf(w, "The multiplication result is: %d", result)
+	fmt.Fprintf(w, "The multiplication result is: %d\n", result)
 }
 
 func divide(w http.ResponseWriter, r *http.Request) {
@@ -156,9 +171,9 @@ func divide(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := intValA / intValB
-	putValueEtcd(result)
+	putValueEtcd(w, result)
 
-	fmt.Fprintf(w, "The division result is: %d", result)
+	fmt.Fprintf(w, "The division result is: %d\n", result)
 }
 
 func sum(w http.ResponseWriter, r *http.Request) {
@@ -168,9 +183,9 @@ func sum(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := intValA + intValB
-	putValueEtcd(result)
+	putValueEtcd(w, result)
 
-	fmt.Fprintf(w, "The sum result is: %d", result)
+	fmt.Fprintf(w, "The sum result is: %d\n", result)
 }
 
 func parseAndCheckValues(w http.ResponseWriter, r *http.Request) (int64, int64, error) {
@@ -190,7 +205,7 @@ func parseAndCheckValues(w http.ResponseWriter, r *http.Request) (int64, int64, 
 func parseAndCheckIntValue(val string, w http.ResponseWriter) (int64, error) {
 	varA, err := strconv.ParseInt(val, 10, 64)
 	if err != nil {
-		fmt.Fprintf(w, "Parameter must '%s' be an Integer", val)
+		fmt.Fprintf(w, "Parameter must '%s' be an Integer\n", val)
 		return 0, err
 	}
 	return varA, err
