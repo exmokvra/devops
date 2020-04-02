@@ -6,6 +6,7 @@ networks:
 
 services:
     etcd:
+        container_name: "etcd_goApp"
         image: 'bitnami/etcd:latest'
         environment: 
             - ALLOW_NONE_AUTHENTICATION=yes
@@ -17,6 +18,7 @@ services:
             - app-tier
     myapp:
         #image: 'guilherme/go1:latest'
+        container_name: "goApp"
         build: .
         command: go run go-homework.go
         ports:
