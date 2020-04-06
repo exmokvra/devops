@@ -1,0 +1,10 @@
+# -*- mode: ruby -*-
+# vi set ft=ruby :
+
+Vagrant.configure(2) do |config|
+
+    #config.vm.box = "centos/7" <<< CentOS version 7
+    #config.vm.box = "hashicorp/precise64" <<< Ubuntu version 12 (it's already on 18. Do not use for PROD)
+    config.vm.network "private_network", ip: "55.55.55.5"
+
+end
