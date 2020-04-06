@@ -1,0 +1,36 @@
+# -*- mode: ruby -*-
+# vi set ft=ruby :
+
+servers=[
+#    {
+#        :hostname => "web-go",
+#        :ip => "192.168.100.10",
+#        :box => "gbailey/amzn2",
+#        :ram => 1024,
+#        :cpu => 2,
+#        :provision => "sudo yum update -y && sudo yum -y install httpd && sudo service httpd start"
+#    },
+    {
+        :hostname => "etcd",
+        :ip => "192.168.100.11",
+        :box => "gbailey/amzn2",
+        :ram => 1024,
+        :cpu => 2,
+        :provision => "sudo yum install -y golang git && sudo git clone https://github.com/coreos/etcd && sudo go get go.etcd.io/etcd && sudo ./etcd/build && sudo echo \"export PATH=$PATH:/home/ec2-user/etcd/bin\" >> ~/.bashrc && source ~/.bashrc && sudo etcd --version"
+    }
+]
+
+Vagrant.configure(2) do |config|
+
+    servers.each do |machine|
+        config.vm.define machine[:hostname] do |node|
+            node.vm.box = machine[:box]
+            node.vm.hostname = machine[:hostname]
+            node.vm.provision "shell", inline: machine[:provision]
+            node.vm.network "private_network", ip: machine[:ip]
+            node.vm.provider "virtualbox" do |vb|
+                vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
+            end
+        end
+    end
+end
