@@ -2,21 +2,13 @@
 # vi set ft=ruby :
 
 servers=[
-#    {
-#        :hostname => "web-go",
-#        :ip => "192.168.100.10",
-#        :box => "gbailey/amzn2",
-#        :ram => 1024,
-#        :cpu => 2,
-#        :provision => "sudo yum update -y && sudo yum -y install httpd && sudo service httpd start"
-#    },
     {
-        :hostname => "etcd",
-        :ip => "192.168.100.11",
+        :hostname => "web-go",
+        :ip => "192.168.100.10",
         :box => "gbailey/amzn2",
         :ram => 1024,
         :cpu => 2,
-        :provision => "sudo yum install -y golang git && sudo git clone https://github.com/coreos/etcd && sudo go get go.etcd.io/etcd && sudo ./etcd/build && sudo echo \"export PATH=$PATH:/home/ec2-user/etcd/bin\" >> ~/.bashrc && source ~/.bashrc && sudo etcd --version"
+        :provision => "sudo yum update -y && sudo yum -y install docker git && sudo git clone https://github.com/guisesterheim/devops/"
     }
 ]
 
