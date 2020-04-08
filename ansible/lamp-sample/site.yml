@@ -5,16 +5,16 @@
   sudo: true	
   hosts: all
   roles:
-  - common
+    - common
 
 - name: configure and deploy the webservers and application code
   sudo: true
   hosts: all #webservers
   roles:
-  - web
+    - web
 
 - name: deploy MySQL and configure the databases
   sudo: true
   hosts: all #dbservers
   roles:
-  - db
+    - db
