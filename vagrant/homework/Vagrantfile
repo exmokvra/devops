@@ -5,10 +5,20 @@ servers=[
     {
         :hostname => "web-go",
         :ip => "192.168.100.10",
-        :box => "gbailey/amzn2",
+        :box => "ubuntu/xenial64",
         :ram => 1024,
         :cpu => 2,
-        :provision => "sudo yum update -y && sudo yum -y install docker git && sudo git clone https://github.com/guisesterheim/devops/"
+        :provision => "sudo apt-get -y update \
+            && sudo apt-get -y install git \
+            && sudo apt-get -y update \
+            && sudo curl -fsSL https://get.docker.com -o get-docker.sh \
+            && sudo sh get-docker.sh \
+            && sudo apt-get install -y python-pip \
+            && sudo pip install docker-compose==1.17.1 \
+            && sudo apt-get -y update \
+            && sudo git clone https://github.com/guisesterheim/goMicroserviceWithETCD \
+            && cd goMicroserviceWithETCD/ \
+            && sudo docker-compose up -d"
     }
 ]
 
