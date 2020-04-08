@@ -2,23 +2,23 @@
 # This playbook contains common plays that will be run on all nodes.
 
 - name: Install ntp
-    yum: name=ntp state=present
-    tags: ntp
+  yum: name=ntp state=present
+  tags: ntp
 
 - name: Configure ntp file
-    template: src=ntp.conf.j2 dest=/etc/ntp.conf
-    tags: ntp
-    notify: restart ntp
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
 
 - name: Start the ntp service
-    service: name=ntpd state=started enabled=yes
-    tags: ntp
+  service: name=ntpd state=started enabled=yes
+  tags: ntp
 
 - name: test to see if selinux is running
-    command: getenforce
-    register: sestatus
-    changed_when: false
+  command: getenforce
+  register: sestatus
+  changed_when: false
 
 - name: Install iptables service
-    yum: name=iptables-services state=present
-    tags: iptables
+  yum: name=iptables-services state=present
+  tags: iptables
