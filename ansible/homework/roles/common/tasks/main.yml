@@ -1,0 +1,12 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: Install Docker
+  become: yes  
+  yum: name=docker state=present
+  tags: Docker
+
+- name: Install Docker-Compose
+  become: yes  
+  yum: name=docker-compose state=present 
+  tags: Docker
