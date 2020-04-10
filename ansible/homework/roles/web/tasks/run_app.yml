@@ -1,7 +1,8 @@
 ---
 - name: Navigate to folder
-  shell: cd {{ destination }}
+  debugger: always  
 
 - name: Run App
   become: yes  
-  shell: docker-compose up -d
+  debugger: always
+  shell: sudo docker-compose -f {{ destination }}/docker-compose.yml up -d

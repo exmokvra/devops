@@ -9,27 +9,29 @@ Vagrant.configure(2) do |config|
         v.cpus = 2
     end
 
-    config.vm.box = "bento/centos-7.1"
+    config.vm.box = "ubuntu/xenial64"
     config.vm.network "private_network", ip: "55.55.55.150"
     config.vm.synced_folder ".", "/home/vagrant/shared"
     config.vm.provision "shell", inline: <<-SHELL
 
-        sudo yum update -y
-        sudo yum install -y wget curl vim git unzip
+        sudo apt-get update -y
+        sudo apt-get install -y wget curl vim git unzip
 
         # Install PIP
-        sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-        sudo python get-pip.py
-        sudo pip install packaging
+        sudo apt-get install -y python3
+        sudo apt-get install -y python3-pip
+        sudo pip3 install --upgrade pip
+        sudo pip3 install packaging
 
         # Install Ansible
-        sudo yum -y install python-jinja2 python-paramiko PyYAML make MySQL-python
+        sudo apt-get -y install python-jinja2 python-paramiko
         sudo sh -c 'touch /home/vagrant/ansible_hosts'
         sudo sh -c 'echo "[localhost]" > /home/vagrant/ansible_hosts'
         sudo sh -c 'echo "localhost ansible_connection=local" >> /home/vagrant/ansible_hosts'
         sudo sh -c 'echo "export ANSIBLE_INVENTORY=~/ansible_hosts" >> /etc/profile'
-        sudo pip install ansible
+        sudo pip3 install ansible
 
+        # Clone and start the app
         sudo git clone https://github.com/guisesterheim/devops/
         # Add command to download repo here
         # Add command to run playbook here
