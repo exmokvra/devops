@@ -1,8 +1,7 @@
 ---
-tasks:
-  - name: Navigate to folder
-    shell: cd {{ destination }}
+- name: Navigate to folder
+  shell: cd {{ destination }}
 
-  - name: Run App
-    become: yes  
-    shell: docker-compose up -d
+- name: Run App
+  become: yes  
+  shell: docker-compose up -d
