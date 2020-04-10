@@ -2,14 +2,14 @@
 # This playbook deploys the whole application stack in this site.
 
 - name: apply common configuration to all nodes
-  become: yes
-  hosts: localhost
+  become: true
+  hosts: "all"
   roles:
     - common
 
 - name: configure and deploy the webservers and application code
-  become: yes
-  hosts: localhost #webservers
+  become: true
+  hosts: "all"
   roles:
     - web
 
