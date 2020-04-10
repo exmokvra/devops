@@ -26,11 +26,11 @@ Vagrant.configure(2) do |config|
         sudo yum -y install python-jinja2 python-paramiko PyYAML make MySQL-python
         sudo sh -c 'touch /home/vagrant/ansible_hosts'
         sudo sh -c 'echo "[localhost]" > /home/vagrant/ansible_hosts'
-        sudo sh -c 'echo "[55.55.55.150]" >> /home/vagrant/ansible_hosts'
         sudo sh -c 'echo "localhost ansible_connection=local" >> /home/vagrant/ansible_hosts'
         sudo sh -c 'echo "export ANSIBLE_INVENTORY=~/ansible_hosts" >> /etc/profile'
         sudo pip install ansible
 
+        sudo git clone https://github.com/guisesterheim/devops/
         # Add command to download repo here
         # Add command to run playbook here
     SHELL
