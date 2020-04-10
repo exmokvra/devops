@@ -1,7 +1,4 @@
 ---
-- name: Navigate to folder
-  debugger: always  
-
 - name: Run App
   become: yes  
   debugger: always
