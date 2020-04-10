@@ -3,13 +3,13 @@
 
 - name: apply common configuration to all nodes
   become: yes
-  hosts: all
+  hosts: localhost
   roles:
     - common
 
 - name: configure and deploy the webservers and application code
   become: yes
-  hosts: all #webservers
+  hosts: localhost #webservers
   roles:
     - web
 
