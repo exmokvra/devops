@@ -1,5 +1,4 @@
 ---
 - name: Run App
   become: yes  
-  debugger: always
   shell: sudo docker-compose -f {{ destination }}/docker-compose.yml up -d
