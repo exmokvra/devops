@@ -11,7 +11,9 @@
 * Name: “shut down CentOS 6 and Debian 7 systems”
 * Command: /sbin/shutdown -t now
 * When: (ansible_facts[‘distribution’] == ‘CentOS’ and ansible_facts[‘distribution_major_version’] == “6”) or (ansible_facts[‘distribution’] == ‘Debian’ and ansible_facts[‘distribution_major_version’] == “7”)
+
 ** Tasks:
+
 *** Command: /bin/false
 *** Register: result
 *** Ignore_errors: True
