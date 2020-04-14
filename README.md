@@ -1,5 +1,6 @@
-# devops
-DevOps
+# DevOps studies sandbox
+
+All subfolders have their own readme file
 
 Personal repository for training on DevOps practices
 
