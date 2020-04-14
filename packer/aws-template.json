@@ -1,5 +1,5 @@
 {
-    "__comments__": "under inline, we download Ansible and run it from the machine",
+    "__comments__": "under inline, we download dependencies, Ansible and run it from the machine. Access key and secret key must be passed as parameters on the run command like the example: 'packer build -var 'aws_access_key=AKIAWHMQHIOJ4KF55ZYF' -var 'aws_secret_key=f12adHPFhMtdx5Cm9gjnYXOK3dKD77V33Nh6NHYw' aws-template.json'",
     "variables": {
         "aws_access_key": "",
         "aws_secret_key": ""
