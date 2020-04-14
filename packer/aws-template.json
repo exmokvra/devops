@@ -7,19 +7,39 @@
     "builders": [{
         "type": "amazon-ebs",
         "access_key": "{{user `aws_access_key`}}",
-        "secret_key": "{{user `aws_secret_key`}",
+        "secret_key": "{{user `aws_secret_key`}}",
         "region": "us-east-1",
-        "source_ami": "ami-9eaa1cf6",
+        "source_ami": "ami-0c435d654482161c5",
+        "tags":[{"Name":"GoMicroWithETCD"}],
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "packer-example {{timestamp}}"
+        "ami_name": "packer-ansible-goWithETCD-{{timestamp}}"
     }],
     "provisioners": [{
         "type": "shell",
         "inline": [
-            "sleep 30",
-            "sudo apt-get update",
-            "sudo apt-get install -y redis-server"
+            "sudo apt-get update -y",
+            "sudo apt-get install -y wget curl vim git",
+
+            "sudo apt-get install -y python3",
+            "sudo add-apt-repository universe",
+            "sudo apt-get update -y",
+
+            "sudo apt-get install -y python3-pip",
+            "sudo pip3 install --upgrade pip",
+            "sudo pip3 install packaging",
+
+            "sudo apt-get -y install python-jinja2 python-paramiko",
+            "sudo mkdir /home/ansible",
+            "sudo sh -c 'touch /home/ansible/ansible_hosts'",
+            "sudo sh -c 'echo \"[localhost]\" > /home/ansible/ansible_hosts'",
+            "sudo sh -c 'echo \"localhost  ansible_connection=local\" >> /home/ansible/ansible_hosts'",
+            "sudo sh -c 'echo \"export ANSIBLE_INVENTORY=~/ansible_hosts\" >> /etc/profile'",
+            "sudo pip3 install ansible",
+
+            "sudo git clone https://github.com/guisesterheim/ansibleExposingGoMicroservice/",
+            
+            "sudo ansible-playbook ansibleExposingGoMicroservice/site.yml"
         ]
     }]
 }
