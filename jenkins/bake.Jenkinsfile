@@ -15,14 +15,14 @@ pipeline {
                 
                 sh 'git clone https://github.com/guisesterheim/devops/'
 
-                sh 'wget -c https://releases.hashicorp.com/packer/1.5.5/packer_1.5.5_linux_amd64.zip'
-                sh 'unzip -o packer_1.5.5_linux_amd64.zip'
+                //sh 'wget -c https://releases.hashicorp.com/packer/1.5.5/packer_1.5.5_linux_amd64.zip'
+                //sh 'unzip -o packer_1.5.5_linux_amd64.zip'
 
                 sh 'echo printing pwd'
                 sh 'pwd'
                 sh 'ls -lsa'
 
-                sh './packer build -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW jenkins/aws-template.json'
+                sh 'packer build -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW jenkins/aws-template.json'
             }
         }
     }
