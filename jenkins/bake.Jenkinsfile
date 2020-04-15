@@ -9,6 +9,7 @@ pipeline {
             }
 
             steps {
+                sh 'ls -lsa'
                 sh 'rm -rf devops/'
                 sh 'rm -rf packer'
                 sh 'rm -rf packer_1.5.5_linux_amd64.zip'
