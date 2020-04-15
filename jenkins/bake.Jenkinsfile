@@ -10,7 +10,7 @@ pipeline {
 
             steps {
                 echo 'Cloning... https://github.com/guisesterheim/devops/'
-                sudo git clone https://github.com/guisesterheim/devops/
+                sh 'sudo git clone https://github.com/guisesterheim/devops/'
 
                 echo 'Printing credentials...'
                 sh 'echo Access key $AWS_ACCESS_KEY_PSW'
