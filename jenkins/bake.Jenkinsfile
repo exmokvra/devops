@@ -21,11 +21,9 @@ pipeline {
                 sh 'echo printing pwd'
                 sh 'pwd'
                 sh 'ls -lsa'
+                sh 'cat devops/jenkins/aws-template.json'
 
-                sh 'mv packer devops/jenkins/'
-                sh 'cd devops/jenkins/'
-
-                sh './packer build -var \'aws_access_key=$AWS_ACCESS_KEY_PSW\' -var \'aws_secret_key=$AWS_SECRET_KEY_PSW\' aws-template.json'
+                sh './packer build -var \'aws_access_key=$AWS_ACCESS_KEY_PSW\' -var \'aws_secret_key=$AWS_SECRET_KEY_PSW\' devops/jenkins/aws-template.json'
 
                 echo 'Done!'
             }
