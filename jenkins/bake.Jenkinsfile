@@ -10,6 +10,7 @@ pipeline {
 
             steps {
                 echo 'Cloning... https://github.com/guisesterheim/devops/'
+                sh 'rm -rf devops/'
                 sh 'git clone https://github.com/guisesterheim/devops/'
 
                 echo 'Printing credentials...'
