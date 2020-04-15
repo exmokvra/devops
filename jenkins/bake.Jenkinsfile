@@ -19,7 +19,7 @@ pipeline {
 
                 echo 'Running packer build to AWS...'
                 sh 'echo Printing packer version'
-                sh ' acker --version'
+                sh 'packer --version'
                 sh 'packer build -var \'aws_access_key=$AWS_ACCESS_KEY_PSW\' -var \'aws_secret_key=$AWS_SECRET_KEY_PSW\' devops/jenkins/aws-template.json'
 
                 echo 'Done!'
