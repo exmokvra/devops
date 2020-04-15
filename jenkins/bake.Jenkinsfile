@@ -20,7 +20,7 @@ pipeline {
 
                 sh 'ls -lsa'
 
-                sh './packer build -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer/aws-template.json'
+                sh './packer build -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer_content/aws-template.json'
             }
         }
     }
