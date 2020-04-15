@@ -10,8 +10,11 @@ pipeline {
 
             steps {
                 sh 'rm -rf packer'
+                sh 'rm -rf devops'
                 sh 'rm -rf packer_1.5.5_linux_amd64.zip'
                 
+                sh 'git clone https://github.com/guisesterheim/devops/'
+
                 sh 'wget -c https://releases.hashicorp.com/packer/1.5.5/packer_1.5.5_linux_amd64.zip'
                 sh 'unzip -o packer_1.5.5_linux_amd64.zip'
 
