@@ -31,8 +31,8 @@ pipeline {
                 // TODO:
             }
         }
-        stage('Launch'){
+        //stage('Launch'){
             // Launch a new machine with the AMI generated on the first step
-        }
+        //}
     }
 }
