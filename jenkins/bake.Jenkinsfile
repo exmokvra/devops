@@ -10,7 +10,7 @@ pipeline {
 
             steps {
                 sh 'rm -rf devops/'
-                sh 'rm -rf packer_1.5.5_linux_amd64.zip.zip'
+                sh 'rm -rf packer_1.5.5_linux_amd64.zip'
 
                 sh 'git clone https://github.com/guisesterheim/devops/'
 
