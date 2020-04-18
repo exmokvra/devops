@@ -39,9 +39,9 @@ pipeline {
                 sh 'unzip -o terraform_0.12.24_linux_amd64.zip'
 
                 // Launch a new machine with the AMI generated on the first step
-                sh './terraform init terraform/'
-                sh './terraform plan -var aws_region=us-east-1 -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW -out tfout.log terraform/'
-                sh './terraform apply out.log terraform/'
+                sh './terraform init terraform_content/'
+                sh './terraform plan -var aws_region=us-east-1 -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW -out tfout.log terraform_content/'
+                sh './terraform terraform_content/apply out.log'
             }
         }
     }
