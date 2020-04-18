@@ -36,7 +36,7 @@ resource "aws_instance" "app" {
     ami = data.aws_ami.image.id
     instance_type = "t2.micro"
     user_data = file("run_app.sh")
-    instance_state = ["running"]
+    instance_state = "running"
 
     tags = {
         Name = "GoMicroserviceWithETCD"
