@@ -41,7 +41,7 @@ pipeline {
                 // Launch a new machine with the AMI generated on the first step
                 sh './terraform init terraform_content/'
                 sh './terraform plan -var aws_region=us-east-1 -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW -out tfout.log terraform_content/'
-                sh './terraform apply terraform_content/tfout.log'
+                sh './terraform apply tfout.log'
             }
         }
     }
