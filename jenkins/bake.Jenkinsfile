@@ -22,8 +22,10 @@ pipeline {
                 sh 'wget -c https://releases.hashicorp.com/packer/1.5.5/packer_1.5.5_linux_amd64.zip'
                 sh 'unzip -o packer_1.5.5_linux_amd64.zip'
 
-                // Packer Build
-                sh './packer build -machine-readable -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer_content/aws-template.json | tee build.log'
+                retry(3){
+                    // Packer Build
+                    sh './packer build -machine-readable -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer_content/aws-template.json | tee build.log'
+                }
             }
         }
         stage('Launch'){
