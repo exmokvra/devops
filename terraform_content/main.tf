@@ -35,7 +35,7 @@ resource "aws_instance" "app" {
     count = 1
     ami = data.aws_ami.image.id
     instance_type = "t2.micro"
-    user_data = file("run_app.sh")
+    user_data = file("terraform_content/run_app.sh")
     instance_state = "running"
 
     tags = {
