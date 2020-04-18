@@ -31,10 +31,12 @@ pipeline {
             }
         }
         stage('Launch'){
-            // Launch a new machine with the AMI generated on the first step
-            sh 'terraform init'
-            sh 'terraform plan -var aws_region=us-east-1 -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW -out tfout.log'
-            sh 'terraform apply out.log'
+            steps {
+                // Launch a new machine with the AMI generated on the first step
+                sh 'terraform init'
+                sh 'terraform plan -var aws_region=us-east-1 -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW -out tfout.log'
+                sh 'terraform apply out.log'
+            }
         }
     }
 }
