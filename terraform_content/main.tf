@@ -35,7 +35,8 @@ resource "aws_instance" "app" {
     count = 1
     ami = data.aws_ami.image.id
     instance_type = "t2.micro"
-    user_data = file("terraform_content/run_app.sh")
+    user_data = file("run_app.sh")
+    vpc_security_group_ids=["sg-00ca61334c513b1e0"]
 
     tags = {
         Name = "GoMicroserviceWithETCD"
