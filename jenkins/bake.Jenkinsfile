@@ -1,13 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_KEY = credentials('AWS_SECRET_KEY')
+    }
+
     stages {
         stage('Build') {
-            environment {
-                AWS_ACCESS_KEY = credentials('AWS_ACCESS_KEY_ID')
-                AWS_SECRET_KEY = credentials('AWS_SECRET_KEY')
-            }
-
             steps {
                 // Some updates and cleaning old files
                 sh 'rm -rf packer'
@@ -24,16 +24,17 @@ pipeline {
                 retry(3){
                     // Packer Build
                     sh './packer build -machine-readable -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer_content/aws-template.json | tee build.log'
-                    // Get generated AMI name
-                    sh 'grep \'artifact,0,id\' build.log cut -d, -f6 | cut -d: -f2' // More at >> https://gist.github.com/danrigsby/11354917
+                    // Get generated AMI name and store it
+                    sh 'AMI_NAME = $(grep \'artifact,0,id\' build.log cut -d, -f6 | cut -d: -f2)' // More at >> https://gist.github.com/danrigsby/11354917
                 }
-                
-                // Store AMI image name on variable
-                // TODO:
+                sh 'echo $AMI_NAME'
             }
         }
-        //stage('Launch'){
+        stage('Launch'){
             // Launch a new machine with the AMI generated on the first step
-        //}
+            sh 'terraform init'
+            sh 'terraform plan -var aws_region=us-east-1 -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW -out tfout.log'
+            sh 'terraform apply out.log'
+        }
     }
 }
