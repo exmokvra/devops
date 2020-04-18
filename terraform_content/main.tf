@@ -37,6 +37,7 @@ resource "aws_instance" "app" {
     instance_type = "t2.micro"
     user_data = file("terraform_content/run_app.sh")
     vpc_security_group_ids=["sg-00ca61334c513b1e0"]
+    key_name = "ssh_terraform"
 
     tags = {
         Name = "GoMicroserviceWithETCD"
