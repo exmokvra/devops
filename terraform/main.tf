@@ -27,7 +27,7 @@ data "aws_ami" "image" {
   filter {
     name = "tag:Name"
     values = ["GoMicroWithETCD"]
-  }                              
+  }
 }
 
 // Creates the infrastructure
@@ -36,15 +36,7 @@ resource "aws_instance" "app" {
     ami = data.aws_ami.image.id
     instance_type = "t2.micro"
     user_data = file("run_app.sh")
-
-    /*
-    listener {
-        instance_port     = 80
-        instance_protocol = "http"
-        lb_port           = 80
-        lb_protocol       = "http"
-    }
-    */
+    instance_state = ["running"]
 
     tags = {
         Name = "GoMicroserviceWithETCD"

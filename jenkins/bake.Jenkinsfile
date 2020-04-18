@@ -18,16 +18,12 @@ pipeline {
                 sh 'git clone https://github.com/guisesterheim/devops/'
 
                 // Install Packer
+                // TODO: Change for just checking version instead of downloading packer every time
                 sh 'wget -c https://releases.hashicorp.com/packer/1.5.5/packer_1.5.5_linux_amd64.zip'
                 sh 'unzip -o packer_1.5.5_linux_amd64.zip'
 
-                retry(3){
-                    // Packer Build
-                    sh './packer build -machine-readable -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer_content/aws-template.json | tee build.log'
-                    // Get generated AMI name and store it
-                    sh 'AMI_NAME = $(grep \'artifact,0,id\' build.log cut -d, -f6 | cut -d: -f2)' // More at >> https://gist.github.com/danrigsby/11354917
-                }
-                sh 'echo $AMI_NAME'
+                // Packer Build
+                sh './packer build -machine-readable -var aws_access_key=$AWS_ACCESS_KEY_PSW -var aws_secret_key=$AWS_SECRET_KEY_PSW packer_content/aws-template.json | tee build.log'
             }
         }
         stage('Launch'){
